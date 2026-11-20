@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cue Card Deck — HR Interview Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --ink:#1c2b2a;
+  --paper:#f4ecd8;
+  --board:#173330;
+  --board-deep:#0f2422;
+  --gold:#cf9a45;
+  --coral:#c15c43;
+  --sage:#7e9c8a;
+  --line:rgba(28,43,42,0.16);
+  --shadow: 0 18px 40px rgba(6,18,17,0.45);
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:'Inter', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(207,154,69,0.08), transparent 45%),
+    radial-gradient(circle at 88% 92%, rgba(193,92,67,0.08), transparent 45%),
+    var(--board);
+  background-attachment:fixed;
+  color:var(--ink);
+  padding:3.5rem 1.5rem 6rem;
+}
+
+/* faint chalkboard texture */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:0.05;
+  background-image:
+    repeating-linear-gradient(0deg, #fff 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, #fff 0 1px, transparent 1px 3px);
+  mix-blend-mode:overlay;
+}
+
+.container{
+  max-width:900px;
+  margin:0 auto;
+  background:transparent;
+  border-radius:0;
+}
+
+header.masthead{
+  text-align:center;
+  margin-bottom:3rem;
+  color:var(--paper);
+  position:relative;
+}
+
+.eyebrow{
+  font-family:'JetBrains Mono', monospace;
+  font-size:0.72rem;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--sage);
+  margin-bottom:0.9rem;
+}
+
+h1{
+  font-family:'Fraunces', serif;
+  font-weight:700;
+  font-size:clamp(2.3rem, 5vw, 3.4rem);
+  line-height:1.05;
+  margin:0 0 0.9rem;
+  letter-spacing:-0.01em;
+}
+h1 em{
+  font-style:italic;
+  font-weight:500;
+  color:var(--gold);
+}
+
+.sub{
+  color:rgba(244,236,216,0.72);
+  font-size:1.02rem;
+  max-width:520px;
+  margin:0 auto;
+  line-height:1.55;
+}
+
+.deck-note{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:0.5rem;
+  margin-top:1.6rem;
+  font-family:'JetBrains Mono', monospace;
+  font-size:0.72rem;
+  letter-spacing:0.05em;
+  color:var(--sage);
+}
+.deck-note svg{width:14px;height:14px;flex:none;}
+
+/* ================= CARD DECK ================= */
+
+.deck{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+
+.card{
+  position:relative;
+  background:var(--paper);
+  border-radius:14px;
+  box-shadow: var(--shadow);
+  border:1px solid rgba(28,43,42,0.08);
+  overflow:hidden;
+  transform:rotate(var(--tilt,0deg));
+  transition: transform 0.35s cubic-bezier(.2,.7,.3,1), box-shadow 0.35s ease;
+}
+.card:nth-child(3n+1){ --tilt:-0.35deg; }
+.card:nth-child(3n+2){ --tilt:0.3deg; }
+.card:nth-child(3n)  { --tilt:-0.15deg; }
+
+.card:hover, .card:focus-within, .card.is-open{
+  transform:rotate(0deg) translateY(-3px);
+  box-shadow: 0 26px 55px rgba(6,18,17,0.55);
+}
+
+/* punch holes -> feels like an index card */
+.card::before{
+  content:"";
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:34px;
+  background:
+    radial-gradient(circle 4px at 17px 22px, var(--board-deep) 98%, transparent 100%),
+    linear-gradient(180deg, var(--gold), var(--coral));
+  opacity:0.9;
+}
+
+.card-tab{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  padding:1.05rem 1.3rem 1.05rem 3.4rem;
+  background:none;
+  border:none;
+  text-align:left;
+  cursor:pointer;
+  font-family:inherit;
+  color:var(--ink);
+}
+.card-tab:focus-visible{
+  outline:2px solid var(--coral);
+  outline-offset:-2px;
+}
+
+.num{
+  font-family:'JetBrains Mono', monospace;
+  font-weight:600;
+  font-size:0.85rem;
+  color:var(--paper);
+  background:var(--ink);
+  min-width:2.1rem;
+  height:2.1rem;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:none;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.card:hover .num, .card.is-open .num{
+  background:var(--coral);
+  transform:scale(1.06);
+}
+
+.q{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  font-size:1.12rem;
+  line-height:1.35;
+  flex:1;
+}
+
+.chev{
+  flex:none;
+  width:20px; height:20px;
+  color:var(--ink);
+  opacity:0.45;
+  transition: transform 0.35s ease, opacity 0.3s ease;
+}
+.card:hover .chev, .card.is-open .chev{
+  transform:rotate(180deg);
+  opacity:0.9;
+  color:var(--coral);
+}
+
+.card-answer{
+  max-height:0;
+  opacity:0;
+  padding:0 1.3rem 0 3.4rem;
+  transition: max-height 0.5s cubic-bezier(.2,.7,.3,1), opacity 0.4s ease, padding 0.4s ease;
+  overflow:hidden;
+  border-top:1px dashed transparent;
+}
+.card:hover .card-answer, .card:focus-within .card-answer, .card.is-open .card-answer{
+  max-height:900px;
+  opacity:1;
+  padding:0.2rem 1.3rem 1.4rem 3.4rem;
+  border-top:1px dashed var(--line);
+}
+
+.card-answer p{
+  margin:0.6rem 0 0;
+  font-size:0.98rem;
+  line-height:1.65;
+  color:var(--ink);
+}
+.card-answer .hint{
+  display:block;
+  margin-top:0.7rem;
+  font-family:'JetBrains Mono', monospace;
+  font-size:0.72rem;
+  letter-spacing:0.02em;
+  color:var(--coral);
+  font-style:normal;
+}
+
+.card-answer ul{
+  margin:0.6rem 0 0;
+  padding-left:1.1rem;
+}
+.card-answer li{
+  font-size:0.98rem;
+  line-height:1.6;
+  margin-bottom:0.35rem;
+}
+
+/* ================= PREP PANEL (not a Q&A card, distinct block) ================= */
+
+.prep{
+  margin-top:2.5rem;
+  background:var(--board-deep);
+  border:1px solid rgba(244,236,216,0.12);
+  border-radius:14px;
+  padding:1.8rem 1.8rem 1.6rem;
+  color:var(--paper);
+  position:relative;
+}
+.prep::before{
+  content:"BEFORE YOU WALK IN";
+  position:absolute;
+  top:-0.65rem;
+  left:1.6rem;
+  background:var(--coral);
+  color:var(--paper);
+  font-family:'JetBrains Mono', monospace;
+  font-size:0.68rem;
+  letter-spacing:0.14em;
+  padding:0.28rem 0.7rem;
+  border-radius:20px;
+}
+.prep h2{
+  font-family:'Fraunces', serif;
+  font-size:1.25rem;
+  margin:0.6rem 0 1rem;
+  color:var(--gold);
+}
+.prep ol{
+  margin:0;
+  padding-left:1.2rem;
+  display:grid;
+  gap:0.65rem;
+}
+.prep li{
+  font-size:0.95rem;
+  line-height:1.55;
+  color:rgba(244,236,216,0.88);
+}
+.prep li strong{ color:var(--paper); }
+
+.footnote{
+  margin-top:1.6rem;
+  text-align:center;
+  color:rgba(244,236,216,0.55);
+  font-size:0.85rem;
+  font-style:italic;
+  max-width:520px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+@media (max-width:560px){
+  body{padding:2.4rem 0.9rem 4rem;}
+  .card-tab{padding:0.9rem 1rem 0.9rem 2.9rem;}
+  .card-answer{padding:0 1rem 0 2.9rem;}
+  .card:hover .card-answer, .card:focus-within .card-answer, .card.is-open .card-answer{
+    padding:0.2rem 1rem 1.2rem 2.9rem;
+  }
+  .q{font-size:1.02rem;}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .card, .card-answer, .num, .chev{ transition:none !important; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="masthead">
+    <div class="eyebrow">HR Interview Cue Cards</div>
+    <h1>Answers you'd <em>actually</em> say<br>out loud</h1>
+    <p class="sub">Thirty-four questions, drawn up like a real interview flashcard box. Hover a card — or tap it on mobile — to flip it over and read the answer.</p>
+    <div class="deck-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      hover any card to reveal
+    </div>
+  </header>
+
+  <div class="deck" id="deck">
+    <!-- Cards injected by JS from data array below for consistency -->
+  </div>
+
+  <div class="prep">
+    <h2>Do this before your interview</h2>
+    <ol>
+      <li><strong>Research the company</strong> — products, recent news, mission, and 2–3 competitors. You'll need this for the "why us" and competitor questions.</li>
+      <li><strong>Build your own real examples</strong> for strengths, weaknesses, leadership, teamwork, and pressure. Generic answers without a story fall flat.</li>
+      <li><strong>Know your number</strong> — check Glassdoor, AmbitionBox, or Naukri for your role and location before they ask about salary.</li>
+      <li><strong>Practice out loud</strong> — record yourself or rehearse with a friend. Delivery carries as much weight as content.</li>
+      <li><strong>Have 2–3 questions ready</strong> to ask them. "No questions" reads as disinterest.</li>
+    </ol>
+  </div>
+
+  <p class="footnote">Tip: share your actual branch of study, experience, target role, and target company, and every answer above can be sharpened to fit you specifically.</p>
+
+</div>
+
+<script>
+const data = [
+{q:"Introduce yourself", a:[
+"Good [morning/afternoon], I'm [name]. I completed my [degree] in [branch] from [college], graduating in [year].",
+"During my studies, I worked on [1–2 key projects/internships], where I developed skills in [skill 1, skill 2].",
+"I'm particularly interested in [area, e.g. software development / data analysis], and I'm looking for an opportunity where I can apply what I've learned and keep growing. That's what brings me here today."
+]},
+{q:"What are your strengths?", a:[
+"I'd say my three biggest strengths are [strength 1], [strength 2], and [strength 3]. For example, during [project/internship], I [brief example showing the strength in action] — that really helped me [result]."
+], hint:"Pick strengths relevant to the job: problem-solving, adaptability, attention to detail, communication, teamwork."},
+{q:"What are your weaknesses, and how do you overcome them?", a:[
+"One area I'm working on is [genuine minor weakness — public speaking / delegating tasks / being overly detail-oriented]. I've noticed this affects [small impact], so I've started [specific action — a communication course, group discussion practice, checklists] to improve it."
+], hint:"Avoid fake weaknesses like \"I work too hard.\" Be honest but low-stakes."},
+{q:"Where do you see yourself 5 years from now?", a:[
+"In five years, I see myself as someone who has grown from a [starting role] into a more senior or specialized role in [area], having built strong expertise in [skill/domain].",
+"I'd like to be someone the team relies on for [specific contribution], and ideally growing into a role with more responsibility — technical leadership or people management."
+]},
+{q:"How long will you work with us, if hired?", a:[
+"I'm looking for a long-term opportunity where I can grow. As long as I feel I'm learning, contributing, and growing with the company, I don't see a reason to leave. My goal is to build a career here, not just a short stint."
+]},
+{q:"Why should I hire you?", a:[
+"I bring [specific skill 1] and [specific skill 2], which I understand are important for this role. Beyond that, I'm a quick learner, I take ownership of my work, and I genuinely want to grow with this company. I believe I can add value from day one while continuing to develop."
+]},
+{q:"Are you willing to sign a bond/agreement? Why?", a:[
+"Yes, I'm open to it, as long as the terms — duration and conditions — are clearly explained. I see it as a mutual commitment: the company invests in training me, and I commit to staying and contributing for that period. I'm confident in my decision to join, so I don't see it as a risk."
+]},
+{q:"You're from a non-IT/mechanical background — why IT?", a:[
+"While my degree was in [branch], I developed a strong interest in [IT/programming/tech] through [reason — a course, project, internship, self-learning, or exposure]. Since then, I've taken steps like [certifications/online courses/personal projects] to build relevant skills.",
+"I'm genuinely drawn to [specific aspect of IT — problem-solving through code, building software], and I'm committed to growing in this field."
+]},
+{q:"What is your passion?", a:[
+"I'm passionate about [genuine interest — solving problems through technology, building things that make processes easier, learning new tools]. For example, [small personal anecdote — a side project or something you built or learned on your own]."
+]},
+{q:"Why do you want to work with us?", a:[
+"I've researched [Company Name], and I'm impressed by [specific fact — their products, work culture, recent achievement, growth, or values]. I believe this is a place where I can apply my skills in [area] while learning from a strong team, and I'd like to contribute to [something specific about their work]."
+], hint:"This requires real research before the interview — see the prep panel below."},
+{q:"What do you know about our organization and competitors?", a:[
+"[Company Name] works in [industry/domain], known for [product/service/achievement]. From what I've read, some of your competitors include [Competitor 1], [Competitor 2]. What stands out to me about [Company Name] is [differentiator — culture, innovation, market position]."
+]},
+{q:"What is your salary expectation?", a:[
+"Based on my research on industry standards for this role and my current skill level, I'd expect somewhere in the range of [X–Y]. That said, I'm flexible and open to discussing based on the complete offer, including learning opportunities and growth potential."
+]},
+{q:"Rate your leadership skills with examples", a:[
+"I'd rate myself [7/8 out of 10] currently, with room to grow. For example, during [college fest/group project/internship], I led a team of [X] people to [achieve a goal]. I made sure to [delegate tasks/resolve a conflict/keep the team motivated], and we successfully [result]."
+]},
+{q:"How well can you handle work pressure?", a:[
+"I handle pressure by staying organized — breaking tasks into smaller priorities and tackling the most urgent first. For instance, during [exam period/project deadline], I had to [situation], and I managed by [specific method — time management, staying calm, seeking help when needed]. I delivered [result] on time."
+]},
+{q:"Can you be flexible with working hours?", a:[
+"Yes, I understand that in this field, flexibility is often required to meet project deadlines or business needs, and I'm comfortable adjusting my schedule when necessary."
+]},
+{q:"Are you willing to work overtime, shifts, etc.?", a:[
+"Yes, I'm open to working overtime or shifts, especially as I build my career. I understand this may be part of the role, and I'm ready to contribute the extra effort when needed."
+]},
+{q:"What kind of environment do you expect inside the organization?", a:[
+"I'd value an environment that's collaborative and supportive, where I can learn from experienced colleagues, and where good work is recognized. I also appreciate a culture that encourages open communication and continuous learning."
+]},
+{q:"Any questions for us?", a:[
+"Always ask 2–3. Examples:"
+], list:[
+"What does a typical day look like for someone in this role?",
+"What are the key skills you'd want me to develop in the first six months?",
+"How would you describe the team culture here?",
+"What are the next steps in the interview process?"
+], hint:"Never say \"no questions\" — it can read as disinterest."},
+{q:"Challenges faced while preparing for IT, handling competition from other students?", a:[
+"One challenge was [not having a CS background / limited coding exposure initially]. Many of my peers had a head start, so I focused on [self-study, online courses, coding practice, projects] to close that gap.",
+"Rather than comparing myself constantly to others, I focused on my own progress and set small, consistent goals, which helped me build confidence and real skills over time."
+]},
+{q:"Short-term and long-term goals?", a:[
+"Short-term, my goal is to [get into a good role, learn the tools/technologies used in the company, contribute effectively to my team]. Long-term, I want to grow into a [specialized/leadership] role where I can [take on bigger responsibilities / mentor others / drive projects]."
+]},
+{q:"What do you do to improve your communication?", a:[
+"I actively work on it by [reading regularly, participating in group discussions, practicing presentations, watching talks/videos in English, journaling, or taking a communication course]. I also try to get feedback from peers and mentors and work on it consistently."
+]},
+{q:"If I ask your friends/relatives about your negatives, what will they say?", a:[
+"They might say I can be [a bit of a perfectionist / overly cautious before making decisions / hesitant to ask for help]. I'm aware of this and have been working on [specific improvement — trusting my initial judgment more, being comfortable asking questions]."
+]},
+{q:"If I pay 10k as salary, will you take the offer?", a:[
+"I appreciate the opportunity, and I'm definitely interested in working with [Company Name]. That said, I'd like to understand the complete package — including growth opportunities, learning, and future increments — before making a decision. I'm open to a fair discussion on this."
+], hint:"Don't say a flat \"yes\" (looks desperate) or flat \"no\" (looks rigid) — show you've thought about it."},
+{q:"General areas of interest, IT interests, and hobbies?", a:[
+"Outside of [main IT interest — web development, data analysis], I enjoy [hobby — reading, sports, music, gaming]. In terms of IT, I'm particularly interested in [specific area — app development, AI, cybersecurity], and I keep up with it by [reading blogs, doing small projects, watching tutorials]."
+]},
+{q:"What are the 3 most important things for you in a job?", a:[
+"For me, it would be: first, opportunities to learn and grow; second, meaningful work where I can see the impact of what I do; and third, a supportive team and work culture."
+]},
+{q:"Who is your role model, and what have you learned from them?", a:[
+"[Name] is someone I admire — a mentor, family member, public figure, or professional in your field. From them, I've learned [specific lesson — persistence, humility, discipline, problem-solving approach], which I try to apply by [small example]."
+], hint:"Pick someone you can speak about with genuine detail — not just a famous name."},
+{q:"What will you do if I don't hire you?", a:[
+"I'll take it as an opportunity to reflect on the interview, understand where I can improve, and work on those areas. I'll continue applying and preparing so that I'm a stronger candidate for future opportunities."
+]},
+{q:"Differentiate between a hardworker and a smartworker", a:[
+"A hardworker focuses on putting in maximum effort and time into a task. A smartworker focuses on achieving the same or better results more efficiently — by prioritizing, using the right tools, and finding better methods. Ideally, the best professionals combine both: working smart to be efficient, and working hard when the situation truly demands extra effort."
+]},
+{q:"Are you planning higher studies in the future?", a:[
+"Not in the immediate future — right now, my focus is on building my career and gaining practical experience. If I do consider further studies later, it would likely be something that complements my work, like a part-time or executive program, so it won't affect my commitment to the job."
+]},
+{q:"Are you a team player? Can you work well in a team?", a:[
+"Yes, definitely. During [group project/internship/college activity], I worked with a team of [X] people on [task]. I made sure to communicate clearly, support teammates when needed, and stay open to feedback, which helped us achieve [result].",
+"I enjoy collaborative work because different perspectives often lead to better solutions."
+]},
+{q:"What analysis have you done about our competitors?", a:[
+"I looked into [Competitor 1] and [Competitor 2], who operate in the same space as [Company Name]. From what I found, [Company Name] differentiates itself through [specific point — technology, customer focus, pricing, innovation, reputation], which is part of why I'm drawn to working here."
+], hint:"Do real research before the interview — see the prep panel below."},
+{q:"Describe yourself in one word", a:[
+"[Word — e.g. \"Adaptable\" / \"Driven\" / \"Curious\"]."
+], hint:"Be ready with a 1-line example that justifies your word choice if they ask \"why?\""},
+{q:"If I give a task that doesn't interest you, will you perform it?", a:[
+"Yes, absolutely. I understand that not every task will be exciting, but every task contributes to the bigger picture and the team's success. I'll approach it with the same professionalism and effort as any other task."
+]},
+{q:"What inspires or motivates you to work?", a:[
+"I'm motivated by [genuine driver — solving problems, learning new things, seeing the impact of my work, growth opportunities, or supporting my family]. Knowing that my work contributes to something bigger keeps me driven, even on challenging days."
+]},
+];
+
+const deck = document.getElementById('deck');
+
+data.forEach((item, i) => {
+  const card = document.createElement('article');
+  card.className = 'card';
+
+  const btn = document.createElement('button');
+  btn.className = 'card-tab';
+  btn.setAttribute('aria-expanded','false');
+  btn.innerHTML = `
+    <span class="num">${String(i+1).padStart(2,'0')}</span>
+    <span class="q">${item.q}</span>
+    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  `;
+
+  const ans = document.createElement('div');
+  ans.className = 'card-answer';
+  let inner = item.a.map(p => `<p>${p}</p>`).join('');
+  if(item.list){
+    inner += '<ul>' + item.list.map(li => `<li>${li}</li>`).join('') + '</ul>';
+  }
+  if(item.hint){
+    inner += `<span class="hint">${item.hint}</span>`;
+  }
+  ans.innerHTML = inner;
+
+  btn.addEventListener('click', () => {
+    const open = card.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  card.appendChild(btn);
+  card.appendChild(ans);
+  deck.appendChild(card);
+});
+</script>
+</body>
+</html>
